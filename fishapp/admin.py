@@ -7,10 +7,9 @@ from .models import *
 """
 
 admin.site.register(Report)
-admin.site.register(Kind_of_fish)
-admin.site.register(Weather_condition)
+admin.site.register(KindOfFish)
+admin.site.register(WeatherCondition)
 admin.site.register(Predicting)
 admin.site.register(Order)
 admin.site.register(Result)
 admin.site.register(Employee)
-
