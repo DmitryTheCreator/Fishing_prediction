@@ -1,5 +1,5 @@
 from ..serializers import ReportSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import Report
 
 """
@@ -20,22 +20,30 @@ class ReportService:
             return ReportSerializer(result)
         return result
 
+
+    def get_all_reports(self) -> ReportSerializer:
+        result = Report.objects.all()
+        return ReportSerializer(result, many=True)
+    
+    
     def create_report(self, report: ReportSerializer) -> None:
         report_data = report.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
         new_report = Report.objects.create(
-            order=report_data.get('order'),
-            result=report_data.get('result'),
-            lead_time=report_data.get('lead_time'),
+            order_id=report_data.get('order_id'),
+            result_id=report_data.get('result_id'),
+            lead_time=report_data.get('lead_time')
         )
         new_report.save()
 
-    def update_report(self, report: ReportSerializer) -> None:
+
+    def update_report(self, report: ReportSerializer, id: int) -> None:
         report_data = report.data
-        report_gotten = Report.objects.filter(id=report_data.get('id'))
-        report_gotten.order = report_data.get('order')
-        report_gotten.result = report_data.get('result')
+        report_gotten = Report.objects.filter(id=id).first()
+        report_gotten.order_id = report_data.get('order_id')
+        report_gotten.result_id = report_data.get('result_id')
         report_gotten.lead_time = report_data.get('lead_time')
         report_gotten.save()
+        
         
     def delete_report(self, id: int) -> None:
         Report.objects.filter(id=id).delete()

@@ -1,5 +1,5 @@
 from ..serializers import FishSerializer
-from .repository_service import *
+from typing import Optional
 
 """
     Данный модуль содержит программный слой с реализацией дополнительной бизнес-логики, 
@@ -13,17 +13,24 @@ from .repository_service import *
 
 class FishService:
     def get_fish_by_id(self, id: int) -> Optional[FishSerializer]:
-        result = KindOfFish.objects.filter(id=id)
+        result = KindOfFish.objects.filter(id=id).first()
         if result is not None:
             return FishSerializer(result)
         return result
+
 
     def get_fish_by_name(self, fish_name: str) -> FishSerializer:
         result = KindOfFish.objects.filter(name=fish_name.lower()).first()
         return FishSerializer(result)
 
+
+    def get_all_fish(self) -> FishSerializer:
+        result = KindOfFish.objects.all()
+        return FishSerializer(result, many=True)
+
+
     def add_fish(self, fish: FishSerializer) -> None:
-        fish_data = fish.data     # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
+        fish_data = fish.data
         new_fish = KindOfFish.objects.create(
             name=fish_data.get('name'),
             temperature=fish_data.get('temperature'),
@@ -36,9 +43,10 @@ class FishService:
         new_fish.save()
 
 
-    def update_fish_info_by_id(self, fish: FishSerializer) -> None:
+    def update_fish_info_by_id(self, fish: FishSerializer, id: int) -> None:
         fish_data = fish.data
-        fish_gotten = KindOfFish.objects.filter(id=fish_data.get('id'))
+        fish_gotten = KindOfFish.objects.filter(id=id).first()
+        fish_gotten.name = fish_data.get('name')
         fish_gotten.temperature = fish_data.get('temperature')
         fish_gotten.cloud_cover = fish_data.get('cloud_cover')
         fish_gotten.precipitation = fish_data.get('precipitation')
@@ -46,6 +54,7 @@ class FishService:
         fish_gotten.atmospheric_pressure = fish_data.get('atmospheric_pressure')
         fish_gotten.humidity = fish_data.get('humidity')
         fish_gotten.save()
+
 
     def update_fish_info_by_name(self, fish: FishSerializer) -> None:
         fish_data = fish.data
@@ -58,8 +67,10 @@ class FishService:
         fish_gotten.humidity = fish_data.get('humidity')
         fish_gotten.save()
 
+
     def delete_fish_by_id(self, id: int) -> None:
         KindOfFish.objects.filter(id=id).delete()
+
 
     def delete_fish_by_name(self, fish_name: str) -> None:
         KindOfFish.objects.filter(name=fish_name.lower()).first().delete()

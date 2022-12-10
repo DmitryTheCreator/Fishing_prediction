@@ -1,5 +1,5 @@
 from ..serializers import OrderSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import Order
 
 """
@@ -20,17 +20,24 @@ class OrderService:
             return OrderSerializer(result)
         return result
 
+
+    def get_all_orders(self) -> OrderSerializer:
+        result = Order.objects.all()
+        return OrderSerializer(result, many=True)
+
+
     def create_order(self, order: OrderSerializer) -> None:
-        order_data = order.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
+        order_data = order.data
         new_order = Order.objects.create(
-            customer_name=order_data.get('name'),
+            customer_name=order_data.get('customer_name'),
             deadline=order_data.get('deadline'),
             receiving_time=order_data.get('receiving_time'),
-            fish_name=order_data.get('fish_name'),
+            kind_of_fish_id=order_data.get('kind_of_fish_id'),
             fish_amount=order_data.get('fish_amount'),
             in_progress=order_data.get('in_progress')
         )
         new_order.save()
 
-    def delete_order_by_id(self, id: str) -> None:
+
+    def delete_order_by_id(self, id: int) -> None:
         Order.objects.filter(id=id).first().delete()

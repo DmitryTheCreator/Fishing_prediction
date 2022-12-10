@@ -3,44 +3,6 @@ from django.utils import timezone
 from django.db import models
 from django.conf import settings
 
-# Create your models here.
-
-
-# class Weather(Model):
-#     id = AutoField(primary_key=True)     # объявление первичного ключа с автоикрементом
-#     _temperature_c = DecimalField(null=False, max_digits=5, decimal_places=2)    # поле не может быть пустым (NULL)
-#     temperature_f = DecimalField(null=False, max_digits=5, decimal_places=2)
-#     pressure = IntegerField(null=True)
-#     # связь полей type и city через внешние ключи
-#     type = ForeignKey('WeatherType', null=False, on_delete=CASCADE)
-#     city = ForeignKey('City', null=False, on_delete=CASCADE)
-#     created_on = DateTimeField(auto_now_add=True)   # в поле автоматически генерируется метка времени при создании записи
-#     updated_on = DateTimeField(auto_now=True)       # в поле автоматически генерируется метка времени при создании записи, метка обновляется при каждой операции UPDATE
-#
-#     class Meta:
-#         """ Установка названия таблицы """
-#         db_table = 'weather'
-#
-#     @property
-#     def temperature_c(self):
-#         """ Стандартные декораторы @property и @setter позволяют задать дополнительную
-#             бизнес-логику или проверку при присвоении атрибуту модели какого-либо значения """
-#         return self._temperature_c
-#
-#     @temperature_c.setter
-#     def temperature_c(self, temperature_c: float):
-#         """ При установке значения полю temperature_c будет автоматически рассчитано значение temperature_f """
-#         self.temperature_f = 32.0 + (temperature_c / 0.5556)
-#         self._temperature_c = temperature_c
-#
-#     def __str__(self):
-#         """ Метод определяет строковое представление модели """
-#         return str({'temperature_c': self.temperature_c, 'temperature_f': self.temperature_f,
-#                     'type': self.type, 'city': self.city, 'created_on': self.created_on, 'updated_on': self.updated_on})
-
-"""--------------------------------------------------------------------------------------------"""
-
-
 
 class KindOfFish(models.Model):
     """ Тип рыбы """

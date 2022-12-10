@@ -25,16 +25,22 @@ schema_view = get_schema_view(
    permission_classes=[permissions.AllowAny],
 )
 
-urlpatterns = [
-   
-    path('fish', views.GetPostPutDelFish.as_view()),
-    path('employee', views.GetPostDelEmployee.as_view()),
-    path('report', views.GetPostPutDelReport.as_view()),
-    path('order', views.GetPostDelOrder.as_view()),
+urlpatterns = [ 
+    path('fish', views.GetPostFish.as_view()),
+    path('fish/<int:id>', views.GetPutDelFishId.as_view()),
+    path('employee', views.GetPostEmployee.as_view()),
+    path('employee/<int:id>', views.GetDelEmployeeId.as_view()),
+    path('order', views.GetPostOrder.as_view()),
+    path('order/<int:id>', views.GetDelOrderId.as_view()),
     path('weather', views.GetPostWeather.as_view()),
-    path('weather/<str:date>', views.GetDelAllWeather.as_view()),
-    path('result', views.GetPostPutDelResult.as_view()),
-    path('predicting', views.GetPostPutDelPredicting.as_view()),
+    path('weather/<int:id>', views.GetDelWeatherId.as_view()),
+    path('weather/<str:date>', views.GetDelWeatherDate.as_view()),
+    path('result', views.GetPostResult.as_view()),
+    path('result/<int:id>', views.GetPutDelResultId.as_view()),
+    path('report', views.GetPostReport.as_view()),
+    path('report/<int:id>', views.GetPutDelReportId.as_view()),  
+    path('predicting', views.GetPostPredicting.as_view()),
+    path('predicting/<int:id>', views.GetPutDelPredictingId.as_view()),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
 ]

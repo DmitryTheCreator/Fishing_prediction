@@ -1,5 +1,5 @@
 from ..serializers import PredictingSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import Predicting
 
 """
@@ -20,22 +20,28 @@ class PredictingService:
             return PredictingSerializer(result)
         return result
 
-    def add_predicting(self, result: PredictingSerializer) -> None:
-        predicting_data = predicting.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
-        new_predicting = Predicitng.objects.create(
-            kind_of_fish=predicting_data.get('kind_of_fish'),
-            weather_condition=predicting_data.get('weather_condition')
+
+    def get_all_predicitngs(self) -> PredictingSerializer:
+        result = Predicting.objects.all()
+        return PredictingSerializer(result, many=True)
+
+
+    def add_predicting(self, predicting: PredictingSerializer) -> None:
+        predicting_data = predicting.data 
+        new_predicting = Predicting.objects.create(
+            kind_of_fish_id=predicting_data.get('kind_of_fish_id'),
+            weather_condition_id=predicting_data.get('weather_condition_id')
         )
         new_predicting.save()
 
 
-    def update_predicting(self, predicting: PredictingSerializer) -> None:
+    def update_predicting(self, predicting: PredictingSerializer, id: int) -> None:
         predicting_data = predicting.data
-        predicting_gotten = Predicting.objects.filter(id=predicting_data.get('id'))
-        predicting_gotten.kind_of_fish = predicting_data.get('kind_of_fish')
-        predicting_gotten.weather_condition = predicting_data.get('weather_condition')
+        predicting_gotten = Predicting.objects.filter(id=id).first()
+        predicting_gotten.kind_of_fish_id = predicting_data.get('kind_of_fish_id')
+        predicting_gotten.weather_condition_id = predicting_data.get('weather_condition_id')
         predicting_gotten.save()
 
 
-    def delete_result_by_id(self, id: int) -> None:
+    def delete_predicting_by_id(self, id: int) -> None:
         Predicting.objects.filter(id=id).first().delete()

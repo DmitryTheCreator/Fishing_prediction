@@ -1,5 +1,5 @@
 from ..serializers import ResultSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import Result
 
 """
@@ -20,23 +20,30 @@ class ResultService:
             return ResultSerializer(result)
         return result
 
+
+    def get_all_results(self) -> ResultSerializer:
+        result = Result.objects.all()
+        return ResultSerializer(result, many=True)
+    
+    
     def add_result(self, result: ResultSerializer) -> None:
         result_data = result.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
         new_result = Result.objects.create(
-            order=result_data.get('order'),
-            employee=result_data.get('employee'),
-            kind_of_fish=result_data.get('kind_of_fish'),
+            order_id=result_data.get('order_id'),
+            employee_id=result_data.get('employee_id'),
+            kind_of_fish_id=result_data.get('kind_of_fish_id'),
             arrival_time=result_data.get('arrival_time'),
             departure_time=result_data.get('departure_time')
         )
         new_result.save()
 
-    def update_result(self, result: ResultSerializer) -> None:
+
+    def update_result(self, result: ResultSerializer, id: int) -> None:
         result_data = result.data
-        result_gotten = Result.objects.filter(id=result_data.get('id'))
-        result_gotten.order = result_data.get('order')
-        result_gotten.employee = result_data.get('employee')
-        result_gotten.kind_of_fish = result_data.get('kind_of_fish')
+        result_gotten = Result.objects.filter(id=id).first()
+        result_gotten.order_id = result_data.get('order_id')
+        result_gotten.employee_id = result_data.get('employee_id')
+        result_gotten.kind_of_fish_id = result_data.get('kind_of_fish_id')
         result_gotten.arrival_time = result_data.get('arrival_time')
         result_gotten.departure_time = result_data.get('departure_time')
         result_gotten.save()

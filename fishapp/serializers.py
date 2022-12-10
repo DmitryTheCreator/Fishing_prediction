@@ -13,6 +13,7 @@ from rest_framework import serializers
 
 
 class FishSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     name = serializers.CharField()
     temperature = serializers.IntegerField(required=False)
     cloud_cover = serializers.IntegerField(required=False)
@@ -27,45 +28,53 @@ class FishSerializer(serializers.Serializer):
 
 
 class WeatherSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     temperature = serializers.IntegerField(required=False)
     cloud_cover = serializers.IntegerField(required=False)
     precipitation = serializers.IntegerField(required=False)
     wind_speed = serializers.IntegerField(required=False)
     atmospheric_pressure = serializers.IntegerField(required=False)
     humidity = serializers.IntegerField(required=False)
+    date = serializers.CharField(required=False)
+    time = serializers.CharField(required=False)
 
 
 class PredictingSerializer(serializers.Serializer):
-    kind_of_fish = serializers.CharField()
-    weather_condition = serializers.CharField()
+    id = serializers.IntegerField(required=False)
+    kind_of_fish_id = serializers.IntegerField()
+    weather_condition_id = serializers.IntegerField()
 
 
 class OrderSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     customer_name = serializers.CharField(required=False)
     deadline = serializers.CharField(required=False)
     receiving_time = serializers.CharField(required=False)
-    kind_of_fish = serializers.CharField(required=False)
+    kind_of_fish_id = serializers.IntegerField()
     fish_amount = serializers.FloatField(required=False)
     in_progress = serializers.IntegerField(required=False)
 
 
 class ResultSerializer(serializers.Serializer):
-    order = serializers.CharField(required=False)
-    employee = serializers.CharField(required=False)
-    kind_of_fish = serializers.CharField(required=False)
+    id = serializers.IntegerField(required=False)
+    order_id = serializers.IntegerField()
+    employee_id = serializers.IntegerField()
+    kind_of_fish_id = serializers.IntegerField()
     arrival_time = serializers.CharField(required=False)
-    departure_time = serializers.FloatField(required=False)
+    departure_time = serializers.CharField(required=False)
 
 
 class EmployeeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
     surname = serializers.CharField(required=False)
     is_on_assingment = serializers.IntegerField(required=False)
 
 
 class ReportSerializer(serializers.Serializer):
-    order = serializers.CharField(required=False)
-    result = serializers.CharField(required=False)
+    id = serializers.IntegerField(required=False)
+    order_id = serializers.IntegerField()
+    result_id = serializers.IntegerField()
     lead_time = serializers.CharField(required=False)
     updated_on = serializers.DateTimeField(required=False)
     created_on = serializers.DateTimeField(required=False)

@@ -1,5 +1,5 @@
 from ..serializers import EmployeeSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import Employee
 
 """
@@ -14,9 +14,15 @@ from ..models import Employee
 
 
 class EmployeeService:
+    def get_all_employees(self) -> EmployeeSerializer:
+        result = Employee.objects.all()
+        return EmployeeSerializer(result, many=True)
+
+
     def get_employee_by_id(self, id: int) -> EmployeeSerializer:
         result = Employee.objects.filter(id=id).first()
         return EmployeeSerializer(result)
+
 
     def add_employee(self, employee: EmployeeSerializer) -> None:
         employee_data = employee.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
@@ -26,6 +32,7 @@ class EmployeeService:
             is_on_assingment=employee_data.get('is_on_assingment'),
         )
         new_employee.save()
+
 
     def delete_employee_by_id(self, id: str) -> None:
         Employee.objects.filter(id=id).first().delete()

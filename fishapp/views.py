@@ -38,19 +38,15 @@ result_service = ResultService()
 predicting_service = PredictingService()
 
 
-class GetPostPutDelFish(GenericAPIView):
+class GetPostFish(GenericAPIView):
     serializer_class = FishSerializer
     renderer_classes = [JSONRenderer]
 
+
     def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о виде рыбы (необходим параметр ?name=) """
-        name = request.query_params.get('name')
-        if name is None:
-            return Response('Expecting query parameter ?name= ', status=status.HTTP_400_BAD_REQUEST)
-        response = fish_service.get_fish_by_name(str(name))
-        if response is not None:
-            return Response(data=response.data)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        """ Получить все записи о видах рыб """
+        response = fish_service.get_all_fish()
+        return Response(data=response.data)
 
 
     def post(self, request: Request, *args, **kwargs) -> Response:
@@ -62,38 +58,47 @@ class GetPostPutDelFish(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def put(self, request: Request, *args, **kwargs) -> Response:
-        """ Обновить запись о виде рыбы """
-        serializer = FishSerializer(data=request.data)
-        if serializer.is_valid():
-            fish_service.update_fish_info(serializer)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-    def delete(self, request: Request, fish_name: str) -> Response:
-        """ Удалить запись о виде рыбы """
-        fish_service.delete_fish_by_name(fish_name)
-        return Response(status=status.HTTP_200_OK)
-
-
-class GetPostDelEmployee(GenericAPIView):
-    serializer_class = EmployeeSerializer
+class GetPutDelFishId(GenericAPIView):
+    serializer_class = FishSerializer
     renderer_classes = [JSONRenderer]
 
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о сотруднике (необходим параметр ?id=) """
-        id = request.query_params.get('id')
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = employee_service.get_employee_by_id(int(id))
+
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о виде рыбы """
+        response = fish_service.get_fish_by_id(id)
         if response is not None:
             return Response(data=response.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+    def put(self, request: Request, *args, id: int) -> Response:
+        """ Обновить запись о виде рыбы """
+        serializer = FishSerializer(data=request.data)
+        if serializer.is_valid():
+            fish_service.update_fish_info_by_id(fish=serializer, id=id)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request: Request, id: int) -> Response:
+        """ Удалить запись о виде рыбы """
+        fish_service.delete_fish_by_id(id)
+        return Response(status=status.HTTP_200_OK)
+
+
+class GetPostEmployee(GenericAPIView):
+    serializer_class = EmployeeSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        """ Получить все записи о сотрудниках """
+        response = employee_service.get_all_employees()
+        return Response(data=response.data)
+
+
     def post(self, request: Request, *args, **kwargs) -> Response:
-        """ Добавить новую запись о сотруднике """
+        """ Добавить новую запись о виде рыбы """
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
             employee_service.add_employee(serializer)
@@ -101,25 +106,33 @@ class GetPostDelEmployee(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def delete(self, request: Request, id: int) -> Response:
-        """ Удалить запись о сотруднике """
-        employee_service.delete_fish_by_name(id)
-        return Response(status=status.HTTP_200_OK)
-
-
-class GetPostDelOrder(GenericAPIView):
-    serializer_class = OrderSerializer
+class GetDelEmployeeId(GenericAPIView):
+    serializer_class = EmployeeSerializer
     renderer_classes = [JSONRenderer]
 
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о заказе (необходим параметр ?id=) """
-        id = request.query_params.get('id')
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = order_service.get_order_by_id(int(id))
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о сотруднике """
+        response = employee_service.get_employee_by_id(id)
         if response is not None:
             return Response(data=response.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def delete(self, request: Request, id: int) -> Response:
+        """ Удалить запись о сотруднике """
+        employee_service.delete_employee_by_id(id)
+        return Response(status=status.HTTP_200_OK)
+
+
+class GetPostOrder(GenericAPIView):
+    serializer_class = OrderSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        """ Получить все записи о заказах """
+        response = order_service.get_all_orders()
+        return Response(data=response.data)
 
 
     def post(self, request: Request, *args, **kwargs) -> Response:
@@ -129,6 +142,18 @@ class GetPostDelOrder(GenericAPIView):
             order_service.create_order(serializer)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetDelOrderId(GenericAPIView):
+    serializer_class = OrderSerializer
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о заказе """
+        response = order_service.get_order_by_id(id)
+        if response is not None:
+            return Response(data=response.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     def delete(self, request: Request, id: int) -> Response:
@@ -141,55 +166,117 @@ class GetPostWeather(GenericAPIView):
     serializer_class = WeatherSerializer
     renderer_classes = [JSONRenderer]
 
+
     def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о погоде (необходим параметр ?id=) """
-        id = request.query_params.get('id')
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = weather_service.get_weather_entry_by_id(int(id))
-        if response is not None:
-            return Response(data=response.data)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        """ Получить все записи о погодных условиях """
+        response = weather_service.get_all_weather_entries()
+        return Response(data=response.data)
 
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о погоде """
         serializer = WeatherSerializer(data=request.data)
         if serializer.is_valid():
-            weather_service.create_order(serializer)
+            weather_service.add_weather_entry(serializer)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-
-class GetDelAllWeather(GenericAPIView):
+class GetDelWeatherId(GenericAPIView):
     serializer_class = WeatherSerializer
     renderer_classes = [JSONRenderer]
 
-    def get(self, request: Request, date: str) -> Response:
-        """ Получить все записи о погоде за определнную дату """
-        response = weather_service.get_all_weather_entry_by_date(date)
-        return Response(data=response.data)
 
-
-    def delete(self, request: Request, date: str) -> Response:
-        """ Удалить все записи о погоде за определнную дату """
-        weather_service.delete_all_weather_entry_by_date(date)
-        return Response(status=status.HTTP_200_OK)
-
-
-class GetPostPutDelReport(GenericAPIView):
-    serializer_class = ReportSerializer
-    renderer_classes = [JSONRenderer]
-
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись об отчете (необходим параметр ?id=) """
-        id = request.query_params.get('id')
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = report_service.get_report_by_id(int(id))
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о погоде """
+        response = weather_service.get_weather_entry_by_id(id)
         if response is not None:
             return Response(data=response.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def delete(self, request: Request, id: int) -> Response:
+        """ Удалить запись о погоде """
+        weather_service.delete_weather_entry_by_id(id)
+        return Response(status=status.HTTP_200_OK)
+
+
+class GetDelWeatherDate(GenericAPIView):
+    serializer_class = WeatherSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, date: str) -> Response:
+        """ Получить все записи о погоде по дате """
+        response = weather_service.get_all_weather_entries_by_date(date)
+        if response is not None:
+            return Response(data=response.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def delete(self, request: Request, date: str) -> Response:
+        """ Удалить все записи о погоде по дате """
+        weather_service.delete_all_weather_entries_by_date(date)
+        return Response(status=status.HTTP_200_OK)
+
+
+class GetPostResult(GenericAPIView):
+    serializer_class = ResultSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        """ Получить все записи о результатах лова """
+        response = result_service.get_all_results()
+        return Response(data=response.data)
+
+
+    def post(self, request: Request, *args, **kwargs) -> Response:
+        """ Добавить новую запись о результате лова """
+        serializer = ResultSerializer(data=request.data)
+        if serializer.is_valid():
+            result_service.add_result(serializer)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class GetPutDelResultId(GenericAPIView):
+    serializer_class = ResultSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о результате лова """
+        response = result_service.get_result_by_id(id)
+        if response is not None:
+            return Response(data=response.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def put(self, request: Request, *args, id: int) -> Response:
+        """ Обновить запись о результате лова """
+        serializer = ResultSerializer(data=request.data)
+        if serializer.is_valid():
+            result_service.update_result(result=serializer, id=id)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request: Request, id: int) -> Response:
+        """ Удалить запись о результате лова """
+        result_service.delete_result_by_id(id)
+        return Response(status=status.HTTP_200_OK)
+    
+    
+class GetPostReport(GenericAPIView):
+    serializer_class = ReportSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        """ Получить все записи об отчетах """
+        response = report_service.get_all_reports()
+        return Response(data=response.data)
 
 
     def post(self, request: Request, *args, **kwargs) -> Response:
@@ -201,11 +288,24 @@ class GetPostPutDelReport(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def put(self, request: Request, *args, **kwargs) -> Response:
+class GetPutDelReportId(GenericAPIView):
+    serializer_class = ReportSerializer
+    renderer_classes = [JSONRenderer]
+
+
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись об отчете """
+        response = report_service.get_report_by_id(id)
+        if response is not None:
+            return Response(data=response.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def put(self, request: Request, *args, id: int) -> Response:
         """ Обновить запись об отчете """
         serializer = ReportSerializer(data=request.data)
         if serializer.is_valid():
-            report_service.update_report(serializer)
+            report_service.update_report(report=serializer, id=id)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -216,77 +316,48 @@ class GetPostPutDelReport(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostPutDelResult(GenericAPIView):
-    serializer_class = ResultSerializer
-    renderer_classes = [JSONRenderer]
-
-    def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о результате лова (необходим параметр ?id=) """
-        id = request.query_params.get('id')  # получаем параметр id из адреса запроса, например: /api/weatherforecast?city_id=1
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = result_service.get_result_by_id(int(id))
-        if response is not None:
-            return Response(data=response.data)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        """ Добавить запись о результате лова """
-        serializer = ResultSerializer(data=request.data)
-        if serializer.is_valid():
-            result_service.add_result(serializer)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-    def put(self, request: Request, *args, **kwargs) -> Response:
-        """ Обновить запись о результате лова """
-        serializer = ResultSerializer(data=request.data)
-        if serializer.is_valid():
-            result_service.update_result(serializer)
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-    def delete(self, request: Request, id: int) -> Response:
-        """ Удалить запись о результате лова """
-        result_service.delete_result_by_id(id)
-        return Response(status=status.HTTP_200_OK)
-
-
-class GetPostPutDelPredicting(GenericAPIView):
+class GetPostPredicting(GenericAPIView):
     serializer_class = PredictingSerializer
     renderer_classes = [JSONRenderer]
 
+
     def get(self, request: Request, *args, **kwargs) -> Response:
-        """ Получить запись о предсказании лова (необходим параметр ?id=) """
-        id = request.query_params.get(
-            'id')  # получаем параметр id из адреса запроса, например: /api/weatherforecast?city_id=1
-        if id is None:
-            return Response('Expecting query parameter ?id= ', status=status.HTTP_400_BAD_REQUEST)
-        response = predicting_service.get_predicting_by_id(int(id))
-        if response is not None:
-            return Response(data=response.data)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        """ Получить все записи о предсказании лова """
+        response = predicting_service.get_all_predicitngs()
+        return Response(data=response.data)
+
 
     def post(self, request: Request, *args, **kwargs) -> Response:
-        """ Добавить запись о предсказании лова """
-        serializer = ResultSerializer(data=request.data)
+        """ Добавить новую запись о предсказании лова """
+        serializer = PredictingSerializer(data=request.data)
         if serializer.is_valid():
             predicting_service.add_predicting(serializer)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-    def put(self, request: Request, *args, **kwargs) -> Response:
+class GetPutDelPredictingId(GenericAPIView):
+    serializer_class = PredictingSerializer
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request: Request, id: int) -> Response:
+        """ Получить запись о предсказании лова """
+        response = predicting_service.get_predicting_by_id(id)
+        if response is not None:
+            return Response(data=response.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def put(self, request: Request, id: int) -> Response:
         """ Обновить запись о предсказании лова """
-        serializer = ResultSerializer(data=request.data)
+        serializer = PredictingSerializer(data=request.data)
         if serializer.is_valid():
-            predicting_service.update_predicting(serializer)
+            predicting_service.update_predicting(predicting=serializer, id=id)
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
     def delete(self, request: Request, id: int) -> Response:
         """ Удалить запись о предсказании лова """
-        predicting_service.get_predicting_by_id(id)
+        predicting_service.delete_predicting_by_id(id)
         return Response(status=status.HTTP_200_OK)

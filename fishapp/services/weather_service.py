@@ -1,5 +1,5 @@
 from ..serializers import WeatherSerializer
-from .repository_service import *
+from typing import Optional
 from ..models import WeatherCondition
 
 """
@@ -20,9 +20,16 @@ class WeatherService:
             return WeatherSerializer(result)
         return result
 
-    def get_all_weather_entry_by_date(self, date: str) -> WeatherSerializer:
+
+    def get_all_weather_entries(self) -> WeatherSerializer:
+        result = WeatherCondition.objects.all()
+        return WeatherSerializer(result, many=True)
+
+
+    def get_all_weather_entries_by_date(self, date: str) -> WeatherSerializer:
         result = WeatherCondition.objects.filter(date=date).all()
         return WeatherSerializer(result, many=True)
+
 
     def add_weather_entry(self, weather: WeatherSerializer) -> None:
         weather_data = weather.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
@@ -38,5 +45,10 @@ class WeatherService:
         )
         new_weather.save()
 
-    def delete_all_weather_entry_by_date(self, date: str) -> None:
+
+    def delete_all_weather_entries_by_date(self, date: str) -> None:
         WeatherCondition.objects.filter(date=date).all().delete()
+
+
+    def delete_weather_entry_by_id(self, id: int) -> None:
+        WeatherCondition.objects.filter(id=id).first().delete()
