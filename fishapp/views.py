@@ -38,16 +38,19 @@ result_service = ResultService()
 predicting_service = PredictingService()
 
 
-class GetPostFish(GenericAPIView):
+class GetFish(GenericAPIView):
     serializer_class = FishSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о видах рыб """
         response = fish_service.get_all_fish()
         return Response(data=response.data)
 
+
+class PostFish(GenericAPIView):
+    serializer_class = FishSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о виде рыбы """
@@ -61,7 +64,6 @@ class GetPostFish(GenericAPIView):
 class GetPutDelFishId(GenericAPIView):
     serializer_class = FishSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, id: int) -> Response:
         """ Получить запись о виде рыбы """
@@ -86,7 +88,7 @@ class GetPutDelFishId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostEmployee(GenericAPIView):
+class GetEmployee(GenericAPIView):
     serializer_class = EmployeeSerializer
     renderer_classes = [JSONRenderer]
 
@@ -96,6 +98,10 @@ class GetPostEmployee(GenericAPIView):
         response = employee_service.get_all_employees()
         return Response(data=response.data)
 
+
+class PostEmployee(GenericAPIView):
+    serializer_class = EmployeeSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о виде рыбы """
@@ -124,16 +130,19 @@ class GetDelEmployeeId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostOrder(GenericAPIView):
+class GetOrder(GenericAPIView):
     serializer_class = OrderSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о заказах """
         response = order_service.get_all_orders()
         return Response(data=response.data)
 
+
+class PostOrder(GenericAPIView):
+    serializer_class = OrderSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о заказе """
@@ -162,16 +171,19 @@ class GetDelOrderId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostWeather(GenericAPIView):
+class GetWeather(GenericAPIView):
     serializer_class = WeatherSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о погодных условиях """
         response = weather_service.get_all_weather_entries()
         return Response(data=response.data)
 
+
+class PostWeather(GenericAPIView):
+    serializer_class = WeatherSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о погоде """
@@ -220,16 +232,19 @@ class GetDelWeatherDate(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostResult(GenericAPIView):
+class GetResult(GenericAPIView):
     serializer_class = ResultSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о результатах лова """
         response = result_service.get_all_results()
         return Response(data=response.data)
 
+
+class PostResult(GenericAPIView):
+    serializer_class = ResultSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о результате лова """
@@ -243,7 +258,6 @@ class GetPostResult(GenericAPIView):
 class GetPutDelResultId(GenericAPIView):
     serializer_class = ResultSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, id: int) -> Response:
         """ Получить запись о результате лова """
@@ -268,16 +282,19 @@ class GetPutDelResultId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
     
     
-class GetPostReport(GenericAPIView):
+class GetReport(GenericAPIView):
     serializer_class = ReportSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи об отчетах """
         response = report_service.get_all_reports()
         return Response(data=response.data)
 
+
+class PostReport(GenericAPIView):
+    serializer_class = ReportSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись об отчете """
@@ -291,7 +308,6 @@ class GetPostReport(GenericAPIView):
 class GetPutDelReportId(GenericAPIView):
     serializer_class = ReportSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, id: int) -> Response:
         """ Получить запись об отчете """
@@ -316,16 +332,19 @@ class GetPutDelReportId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetPostPredicting(GenericAPIView):
+class GetPredicting(GenericAPIView):
     serializer_class = PredictingSerializer
     renderer_classes = [JSONRenderer]
-
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о предсказании лова """
         response = predicting_service.get_all_predicitngs()
         return Response(data=response.data)
 
+
+class PostPredicting(GenericAPIView):
+    serializer_class = PredictingSerializer
+    renderer_classes = [JSONRenderer]
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         """ Добавить новую запись о предсказании лова """

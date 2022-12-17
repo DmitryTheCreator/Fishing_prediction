@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('api/', include('fishapp.urls')),  # подключаем Views из приложения weatherapp
+    path('fishzone/', include('fishapp.urls')),  # подключаем Views из приложения weatherapp
     path('admin/', admin.site.urls),
 ]

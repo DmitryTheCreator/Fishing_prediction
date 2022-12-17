@@ -74,7 +74,7 @@ class Order(models.Model):
     receiving_time = CharField(max_length=20, null=False, unique=False)
     kind_of_fish = ForeignKey('KindOfFish', null=False, on_delete=CASCADE)
     fish_amount = FloatField(null=False, unique=False)
-    in_progress = BooleanField(null=False, unique=False)
+    in_progress = IntegerField(null=False, unique=False)
 
     class Meta:
         db_table = 'Order'
