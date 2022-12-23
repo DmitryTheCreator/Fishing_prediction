@@ -53,6 +53,7 @@ class FishService:
         fish_gotten.wind_speed = fish_data.get('wind_speed')
         fish_gotten.atmospheric_pressure = fish_data.get('atmospheric_pressure')
         fish_gotten.humidity = fish_data.get('humidity')
+        fish_gotten.fishing_time = fish_data.get('fishing_time')
         fish_gotten.save()
 
 

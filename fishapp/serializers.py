@@ -21,6 +21,7 @@ class FishSerializer(serializers.Serializer):
     wind_speed = serializers.IntegerField(required=False)
     atmospheric_pressure = serializers.IntegerField(required=False)
     humidity = serializers.IntegerField(required=False)
+    fishing_time = serializers.FloatField(required=False)
 
     """ Класс Serializer позволяет переопределить наследуемые 
         методы create() и update(), в которых, например, можно реализовать бизнес-логику 
@@ -41,8 +42,10 @@ class WeatherSerializer(serializers.Serializer):
 
 class PredictingSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
-    kind_of_fish_id = serializers.IntegerField()
+    order_id = serializers.IntegerField()
     weather_condition_id = serializers.IntegerField()
+    predict = serializers.IntegerField()
+    date = serializers.CharField(required=False)
 
 
 class OrderSerializer(serializers.Serializer):
@@ -69,6 +72,7 @@ class EmployeeSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)
     surname = serializers.CharField(required=False)
     is_on_assingment = serializers.IntegerField(required=False)
+    performance = serializers.IntegerField(required=False)
 
 
 class ReportSerializer(serializers.Serializer):

@@ -47,7 +47,8 @@ class RESTServerUser(HttpUser):
             "precipitation": randint(0, 4),
             "wind_speed": randint(0, 10),
             "atmospheric_pressure": randint(700, 800),
-            "humidity": randint(0, 100)
+            "humidity": randint(0, 100),
+            "fishing_time": radint(1, 100) / 100
         })
 
 
@@ -174,6 +175,7 @@ class RESTServerUser(HttpUser):
             "receiving_time": str(datetime.datetime.now() - datetime.timedelta(hours=2))[:16],
             "kind_of_fish_id": randint(2, 8),
             "fish_amount": randint(1, 100),
-            "in_progress": randint(0, 1)
+            "in_progress": randint(0, 1),
+            "predict": randint(10, 15)
         }
         self.client.post(f'/fishzone/order', json_data)

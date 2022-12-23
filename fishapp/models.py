@@ -14,7 +14,7 @@ class KindOfFish(models.Model):
     wind_speed = IntegerField(null=True)
     atmospheric_pressure = IntegerField(null=True)
     humidity = IntegerField(null=True)
-
+    fishing_time = FloatField(null=True)
 
     class Meta:
         db_table = 'KindOfFish'
@@ -23,8 +23,7 @@ class KindOfFish(models.Model):
         return str({'id': self.id, 'name': self.name, 'temperature': self.temperature,
                     'cloud_cover': self.cloud_cover, 'precipitation': self.precipitation,
                     'wind_speed': self.cloud_cover, 'atmospheric_pressure': self.atmospheric_pressure,
-                    'humidity': self.humidity})
-
+                    'humidity': self.humidity, 'fishing_time': self.fishing_time})
 
 
 class WeatherCondition(models.Model):
@@ -39,7 +38,6 @@ class WeatherCondition(models.Model):
     date = CharField(max_length=10, null=True, unique=False)
     time = CharField(max_length=8, null=True, unique=False)
 
-
     class Meta:
         db_table = 'WeatherCondition'
 
@@ -50,20 +48,20 @@ class WeatherCondition(models.Model):
                     'date': self.date, 'time': self.time})
 
 
-
-
-class Predicting(models.Model):
+class Predicting(models.Model):  # тип рыбы поменять на заказ, таким образом тип рыбы получаем непосредственно из заказа
     """ Предсказание """
     id = AutoField(primary_key=True)  # объявление первичного ключа с автоикрементом
-    kind_of_fish = ForeignKey('KindOfFish', null=False, on_delete=CASCADE)
+    order = ForeignKey('Order', null=False, on_delete=CASCADE)
     weather_condition = ForeignKey('WeatherCondition', null=False, on_delete=CASCADE)
+    predict = IntegerField(null=True)
+    date = CharField(max_length=10, null=True, unique=False)
 
     class Meta:
         db_table = 'Predicting'
 
     def __str__(self):
-        return str({'id': self.id, 'kind_of_fish': self.kind_of_fish,
-                    'weather_condition': self.weather_condition})
+        return str({'id': self.id, 'order': self.order,
+                    'weather_condition': self.weather_condition, 'predict': self.predict, 'date': self.date})
 
 
 class Order(models.Model):
@@ -91,14 +89,14 @@ class Employee(models.Model):
     name = CharField(max_length=20, null=False, unique=False)
     surname = CharField(max_length=20, null=False, unique=False)
     is_on_assingment = BooleanField(null=False, unique=False)
+    performance = IntegerField(null=False, unique=False)
 
     class Meta:
         db_table = 'Employee'
 
     def __str__(self):
         return str({'id': self.id, 'name': self.name, 'surname': self.surname,
-                    'is_on_assingment': self.is_on_assingment})
-    
+                    'is_on_assingment': self.is_on_assingment, 'performance': self.performance})
 
 
 class Result(models.Model):

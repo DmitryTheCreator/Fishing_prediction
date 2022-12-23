@@ -112,7 +112,7 @@ class PostEmployee(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetDelEmployeeId(GenericAPIView):
+class GetPutDelEmployeeId(GenericAPIView):
     serializer_class = EmployeeSerializer
     renderer_classes = [JSONRenderer]
 
@@ -122,6 +122,15 @@ class GetDelEmployeeId(GenericAPIView):
         if response is not None:
             return Response(data=response.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def put(self, request: Request, *args, id: int) -> Response:
+        """ Обновить запись о сотруднике """
+        serializer = EmployeeSerializer(data=request.data)
+        if serializer.is_valid():
+            employee_service.update_employee(serializer, id=id)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
     def delete(self, request: Request, id: int) -> Response:
@@ -153,7 +162,7 @@ class PostOrder(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetDelOrderId(GenericAPIView):
+class GetPutDelOrderId(GenericAPIView):
     serializer_class = OrderSerializer
     renderer_classes = [JSONRenderer]
 
@@ -163,6 +172,15 @@ class GetDelOrderId(GenericAPIView):
         if response is not None:
             return Response(data=response.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def put(self, request: Request, *args, id: int) -> Response:
+        """ Обновить запись о заказе """
+        serializer = OrderSerializer(data=request.data)
+        if serializer.is_valid():
+            order_service.update_order(serializer, id=id)
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
     def delete(self, request: Request, id: int) -> Response:
@@ -339,6 +357,16 @@ class GetPredicting(GenericAPIView):
     def get(self, request: Request, *args, **kwargs) -> Response:
         """ Получить все записи о предсказании лова """
         response = predicting_service.get_all_predicitngs()
+        return Response(data=response.data)
+
+
+class GetPredictingByDate(GenericAPIView):
+    serializer_class = PredictingSerializer
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request: Request, date: str) -> Response:
+        """ Получить все записи за 3 дня о предсказании лова """
+        response = predicting_service.get_all_predicitngs_by_date(date)
         return Response(data=response.data)
 
 

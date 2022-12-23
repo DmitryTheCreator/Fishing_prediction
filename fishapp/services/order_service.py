@@ -39,5 +39,17 @@ class OrderService:
         new_order.save()
 
 
+    def update_order(self, order: OrderSerializer, id: int) -> None:
+        order_data = order.data
+        order_gotten = Order.objects.filter(id=id).first()
+        order_gotten.customer_name = order_data.get('customer_name')
+        order_gotten.deadline = order_data.get('deadline')
+        order_gotten.receiving_time = order_data.get('receiving_time')
+        order_gotten.kind_of_fish_id = order_data.get('kind_of_fish_id')
+        order_gotten.fish_amount = order_data.get('fish_amount')
+        order_gotten.in_progress = order_data.get('in_progress')
+        order_gotten.save()
+
+
     def delete_order_by_id(self, id: int) -> None:
         Order.objects.filter(id=id).first().delete()

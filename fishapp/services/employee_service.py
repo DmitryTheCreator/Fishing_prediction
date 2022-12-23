@@ -30,8 +30,19 @@ class EmployeeService:
             name=employee_data.get('name'),
             surname=employee_data.get('surname'),
             is_on_assingment=employee_data.get('is_on_assingment'),
+            performance=employee_data.get('performance')
         )
         new_employee.save()
+
+
+    def update_employee(self, employee: EmployeeSerializer, id: int) -> None:
+        employee_data = employee.data
+        employee_gotten = Employee.objects.filter(id=id).first()
+        employee_gotten.name = employee_data.get('name')
+        employee_gotten.surname = employee_data.get('surname')
+        employee_gotten.is_on_assingment = employee_data.get('is_on_assingment')
+        employee_gotten.performance = employee_data.get('performance')
+        employee_gotten.save()
 
 
     def delete_employee_by_id(self, id: str) -> None:
