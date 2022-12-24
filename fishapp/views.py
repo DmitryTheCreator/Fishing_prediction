@@ -189,7 +189,7 @@ class GetPutDelOrderId(GenericAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class GetWeather(GenericAPIView):
+class GetDelWeather(GenericAPIView):
     serializer_class = WeatherSerializer
     renderer_classes = [JSONRenderer]
 
@@ -197,6 +197,11 @@ class GetWeather(GenericAPIView):
         """ Получить все записи о погодных условиях """
         response = weather_service.get_all_weather_entries()
         return Response(data=response.data)
+
+    def delete(self, request: Request) -> Response:
+        """ Удалить все записи о погоде """
+        weather_service.delete_all_weather()
+        return Response(status=status.HTTP_200_OK)
 
 
 class PostWeather(GenericAPIView):
@@ -264,11 +269,11 @@ class PostResult(GenericAPIView):
     serializer_class = ResultSerializer
     renderer_classes = [JSONRenderer]
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
+    def post(self, request: Request, predicting_id: int, employee_id: int) -> Response:
         """ Добавить новую запись о результате лова """
         serializer = ResultSerializer(data=request.data)
         if serializer.is_valid():
-            result_service.add_result(serializer)
+            result_service.add_result(predicting_id=predicting_id, employee_id=employee_id)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -374,11 +379,11 @@ class PostPredicting(GenericAPIView):
     serializer_class = PredictingSerializer
     renderer_classes = [JSONRenderer]
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
+    def post(self, request: Request, order_id) -> Response:
         """ Добавить новую запись о предсказании лова """
         serializer = PredictingSerializer(data=request.data)
         if serializer.is_valid():
-            predicting_service.add_predicting(serializer)
+            predicting_service.add_predicting(order_id= order_id)
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -408,3 +413,19 @@ class GetPutDelPredictingId(GenericAPIView):
         """ Удалить запись о предсказании лова """
         predicting_service.delete_predicting_by_id(id)
         return Response(status=status.HTTP_200_OK)
+
+
+    class GetPredictTime(GenericAPIView):
+        serializer_class = PredictingSerializer
+        renderer_classes = [JSONRenderer]
+
+        def get(self, request: Request, id: int) -> Response:
+            """ Получить запись о прогнозируемом времени """
+
+            response = predicting_service.get_predicting_by_id(id)
+            if response is not None:
+                return Response(data=response.data)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+

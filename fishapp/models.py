@@ -51,8 +51,8 @@ class WeatherCondition(models.Model):
 class Predicting(models.Model):  # тип рыбы поменять на заказ, таким образом тип рыбы получаем непосредственно из заказа
     """ Предсказание """
     id = AutoField(primary_key=True)  # объявление первичного ключа с автоикрементом
-    order = ForeignKey('Order', null=False, on_delete=CASCADE)
-    weather_condition = ForeignKey('WeatherCondition', null=False, on_delete=CASCADE)
+    order = ForeignKey('Order', null=True, on_delete=CASCADE)
+    weather_condition = ForeignKey('WeatherCondition', null=True, on_delete=CASCADE)
     predict = IntegerField(null=True)
     date = CharField(max_length=10, null=True, unique=False)
 
@@ -105,15 +105,17 @@ class Result(models.Model):
     order = ForeignKey('Order', null=False, on_delete=CASCADE)
     employee = ForeignKey('Employee', null=False, on_delete=CASCADE)
     kind_of_fish = ForeignKey('KindOfFish', null=False, on_delete=CASCADE)
-    arrival_time = CharField(max_length=20, null=False, unique=False)
-    departure_time = CharField(max_length=20, null=False, unique=False)
+    arrival_time = CharField(max_length=20, null=True, unique=False)
+    departure_time = CharField(max_length=20, null=True, unique=False)
+    predict_time = CharField(max_length=20, null=True, unique=False)
 
     class Meta:
         db_table = 'Result'
 
     def __str__(self):
         return str({'id': self.id, 'order': self.order, 'employee': self.employee, 'kind_of_fish': self.kind_of_fish,
-                    'arrival_time': self.arrival_time, 'departure_time': self.departure_time})
+                    'arrival_time': self.arrival_time, 'departure_time': self.departure_time,
+                    'predict_time': self.predict_time})
 
 
 class Report(models.Model):

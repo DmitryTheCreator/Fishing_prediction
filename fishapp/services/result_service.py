@@ -1,6 +1,12 @@
 from ..serializers import ResultSerializer
 from typing import Optional
 from ..models import Result
+from .fish_service import FishService
+from .order_service import OrderService
+from .predicting_service import PredictingService
+from .employee_service import EmployeeService
+from datetime import datetime, timedelta
+import math
 
 """
     Данный модуль содержит программный слой с реализацией дополнительной бизнес-логики, 
@@ -26,14 +32,30 @@ class ResultService:
         return ResultSerializer(result, many=True)
     
     
-    def add_result(self, result: ResultSerializer) -> None:
-        result_data = result.data  # получаем валидированные с помощью сериализатора данные (метод .data  возвращает объект типа dict)
+    def add_result(self, predicting_id: int, employee_id: int) -> None:
+        fish_service = FishService()
+        order_service = OrderService()
+        predicting_service = PredictingService()
+        employee_service = EmployeeService()
+
+        predicting = predicting_service.get_predicting_by_id(id=predicting_id)
+        order = order_service.get_order_by_id(id=predicting.data['order_id'])
+        fish = fish_service.get_fish_by_id(id=order.data['kind_of_fish_id'])
+        employee = employee_service.get_employee_by_id(id=employee_id)
+
+        predicting_time = (fish.data['fishing_time'] * order.data['fish_amount']) / \
+                          ((predicting.data['predict'] / 100) * (employee.data['performance'] / 100))
+
         new_result = Result.objects.create(
-            order_id=result_data.get('order_id'),
-            employee_id=result_data.get('employee_id'),
-            kind_of_fish_id=result_data.get('kind_of_fish_id'),
-            arrival_time=result_data.get('arrival_time'),
-            departure_time=result_data.get('departure_time')
+            order_id=order.data['id'],
+            employee_id=employee_id,
+            kind_of_fish_id=fish.data['id'],
+            arrival_time=datetime.now().strftime('%Y-%m-%d %H:%M'),
+            departure_time=(datetime.now() +
+                            timedelta(hours=math.floor(predicting_time),
+                                      minutes=round(predicting_time % 1, 2) % 60,
+                                      seconds=0)).strftime('%Y-%m-%d %H:%M'),
+            predict_time=f'{math.floor(predicting_time)}:{str(int(str(round(predicting_time % 1, 2)).split(".")[1]) % 60) if len(str(int(str(round(predicting_time % 1, 2)).split(".")[1]) % 60)) != 1 else "0" +  str(int(str(round(predicting_time % 1, 2)).split(".")[1]) % 60)}'
         )
         new_result.save()
 
@@ -46,6 +68,7 @@ class ResultService:
         result_gotten.kind_of_fish_id = result_data.get('kind_of_fish_id')
         result_gotten.arrival_time = result_data.get('arrival_time')
         result_gotten.departure_time = result_data.get('departure_time')
+        result_gotten.predict_time = result_data.get('predict_time')
         result_gotten.save()
 
 

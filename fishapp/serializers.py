@@ -42,9 +42,9 @@ class WeatherSerializer(serializers.Serializer):
 
 class PredictingSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
-    order_id = serializers.IntegerField()
-    weather_condition_id = serializers.IntegerField()
-    predict = serializers.IntegerField()
+    order_id = serializers.IntegerField(required=False)
+    weather_condition_id = serializers.IntegerField(required=False)
+    predict = serializers.IntegerField(required=False)
     date = serializers.CharField(required=False)
 
 
@@ -60,11 +60,12 @@ class OrderSerializer(serializers.Serializer):
 
 class ResultSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
-    order_id = serializers.IntegerField()
-    employee_id = serializers.IntegerField()
-    kind_of_fish_id = serializers.IntegerField()
+    order_id = serializers.IntegerField(required=False)
+    employee_id = serializers.IntegerField(required=False)
+    kind_of_fish_id = serializers.IntegerField(required=False)
     arrival_time = serializers.CharField(required=False)
     departure_time = serializers.CharField(required=False)
+    predict_time = serializers.CharField(required=False)
 
 
 class EmployeeSerializer(serializers.Serializer):

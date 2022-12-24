@@ -25,7 +25,7 @@ schema_view = get_schema_view(
    permission_classes=[permissions.AllowAny],
 )
 
-urlpatterns = [ 
+urlpatterns = [
     path('fish/all', views.GetFish.as_view()),
     path('fish', views.PostFish.as_view()),
     path('fish/<int:id>', views.GetPutDelFishId.as_view()),
@@ -35,20 +35,20 @@ urlpatterns = [
     path('order/all', views.GetOrder.as_view()),
     path('order', views.PostOrder.as_view()),
     path('order/<int:id>', views.GetPutDelOrderId.as_view()),
-    path('weather/all', views.GetWeather.as_view()),
+    path('weather/all', views.GetDelWeather.as_view()),
     path('weather', views.PostWeather.as_view()),
     path('weather/<int:id>', views.GetDelWeatherId.as_view()),
     path('weather/<str:date>', views.GetDelWeatherDate.as_view()),
     path('result/all', views.GetResult.as_view()),
-    path('result', views.PostResult.as_view()),
+    path('result/<int:predicting_id>-<int:employee_id>', views.PostResult.as_view()),
     path('result/<int:id>', views.GetPutDelResultId.as_view()),
     path('report/all', views.GetReport.as_view()),
     path('report', views.PostReport.as_view()),
-    path('report/<int:id>', views.GetPutDelReportId.as_view()),  
-    path('predicting/all', views.GetPredicting.as_view()),
-    path('predicting/<str:date>', views.GetPredictingByDate.as_view()),
-    path('predicting', views.PostPredicting.as_view()),
+    path('predicting/<int:order_id>', views.PostPredicting.as_view()),
+    path('report/<int:id>', views.GetPutDelReportId.as_view()),
     path('predicting/<int:id>', views.GetPutDelPredictingId.as_view()),
+    path('predicting/<str:date>', views.GetPredictingByDate.as_view()),
+    path('predicting/all', views.GetPredicting.as_view()),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui')
 ]
